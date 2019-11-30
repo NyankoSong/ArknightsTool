@@ -3,6 +3,9 @@
 #include <stdlib.h>
 #include <Afxwin.h>
 #include <Windows.h>
+#include <fstream>
+#include <string>
+#include <cstring>
 #pragma comment (lib, "User32.lib")
 
 void* GetColor(int x, int y, int* color);
@@ -12,10 +15,40 @@ void* GetSize(int* size);
 int main(void) {
 
 	POINT p;
-	const double readyKx = 0.8843537, readyKy = 0.8533916, startKx = 0.8503401, startKy = 0.6673960, outKx = 0.8163265, outKy = 0.3282275;
-
+	double readyKx = 0.8843537, readyKy = 0.8533916, startKx = 0.8503401, startKy = 0.6673960, outKx = 0.8163265, outKy = 0.3282275;//位置参数
+	double multiple = 1.25;//显示放大倍数
 	int dy = 0;//顶液
-	double multiple = 1.25;
+	std::string name, line;
+	std::ifstream settings("Settings.txt");
+	if (!settings) {
+		std::cout << "未找到配置文件！请先获取Settings.txt！" << std::endl;
+		//char s[2];
+		//std::cout << "是否使用默认位置参数？（适用于1440*810分辨率的MuMu模拟器）：（Y/N）" << std::endl;
+		//std::cin >> s;
+		//if (s[0] == 'Y') {
+		//	std::ofstream settings("Settings.txt");
+		//	settings << "0.8843537\n" << "0.8533916\n" << "0.8503401\n" << "0.6673960\n" << "0.8163265\n" << "0.3282275\n";
+
+		//}
+	}
+	else {
+		std::getline(settings, line);
+		readyKx = atof(line.c_str());
+		std::getline(settings, line);
+		readyKy = atof(line.c_str());
+		std::getline(settings, line);
+		startKx = atof(line.c_str());
+		std::getline(settings, line);
+		startKy = atof(line.c_str());
+		std::getline(settings, line);
+		outKx = atof(line.c_str());
+		std::getline(settings, line);
+		outKy = atof(line.c_str());
+		std::getline(settings, line);
+		multiple = atof(line.c_str());
+		std::getline(settings, name);
+	}
+
 	int color[3], size[2], PicPos[2];
 	for (int i = 0; i < 3; ++i) {
 		color[i] = 0;
@@ -30,7 +63,7 @@ int main(void) {
 	//HWND hwnd = GetForegroundWindow();
 
 	RECT rect;
-	HWND hwnd = FindWindowA(NULL, "明日方舟 - MuMu模拟器");
+	HWND hwnd = FindWindowA(NULL, name.c_str());
 	GetWindowRect(hwnd, &rect);
 	//std::cout << rect.left << " " << rect.right << std::endl;
 
