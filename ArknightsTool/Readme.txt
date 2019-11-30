@@ -6,3 +6,4 @@ outKx
 outKy
 multiple
 name
+time

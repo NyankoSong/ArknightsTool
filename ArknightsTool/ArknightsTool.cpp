@@ -18,13 +18,19 @@ int main(void) {
 	double readyKx = 0.8843537, readyKy = 0.8533916, startKx = 0.8503401, startKy = 0.6673960, outKx = 0.8163265, outKy = 0.3282275;//位置参数
 	double multiple = 1.25;//显示放大倍数
 	int dy = 0;//顶液
+	int gtime = 80;//秒为单位
 	std::string name, line;
 	std::ifstream settings("Settings.txt");
 	if (!settings) {
-		std::cout << "未找到配置文件！请先获取Settings.txt！" << std::endl;
-		//char s[2];
-		//std::cout << "是否使用默认位置参数？（适用于1440*810分辨率的MuMu模拟器）：（Y/N）" << std::endl;
-		//std::cin >> s;
+		char s[2];
+		std::cout << "是否使用默认设置参数？（适用于1920*1080显示器125%放大1440*810分辨率的MuMu模拟器刷1-7）：（Y/N）" << std::endl;
+		std::cin >> s;
+		if (s[0] == 'N') {
+			std::cout << "未找到配置文件！请先获取或创建Settings.txt并与程序放在同一目录下！" << std::endl;
+			system("pause");
+			exit(1);
+		}
+		
 		//if (s[0] == 'Y') {
 		//	std::ofstream settings("Settings.txt");
 		//	settings << "0.8843537\n" << "0.8533916\n" << "0.8503401\n" << "0.6673960\n" << "0.8163265\n" << "0.3282275\n";
@@ -47,6 +53,8 @@ int main(void) {
 		std::getline(settings, line);
 		multiple = atof(line.c_str());
 		std::getline(settings, name);
+		std::getline(settings, line);
+		gtime = atoi(line.c_str());
 	}
 
 	int color[3], size[2], PicPos[2];
@@ -103,7 +111,7 @@ int main(void) {
 		SetCursorPos(startX + rand() % 20, startY + rand() % 20);
 		mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, GetMessageExtraInfo());
 		mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, GetMessageExtraInfo());
-		Sleep(80000 + rand() % 2000);
+		Sleep(gtime * 1000 + rand() % 2000);
 		GetColor((readyX - (rect.right - rect.left) * 0.0173611) * multiple, readyY * multiple, color);
 		while (color[0] > 30 || color[1] > 30 || color[2] > 30) {
 			Sleep(2000);
