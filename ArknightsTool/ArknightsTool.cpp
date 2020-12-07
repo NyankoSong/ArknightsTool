@@ -1,7 +1,7 @@
 ﻿#define _AFXDLL
 #include <iostream>
 #include <stdlib.h>
-#include <Afxwin.h>
+//#include <Afxwin.h>
 #include <Windows.h>
 #include <fstream>
 #include <string>
@@ -17,7 +17,7 @@ int main(void) {
 	POINT p;
 	double readyKx = 0.8843537, readyKy = 0.8533916, startKx = 0.8503401, startKy = 0.6673960, outKx = 0.8163265, outKy = 0.3282275;//位置参数
 	double multiple = 1.25;//显示放大倍数
-	int dy = 0;//顶液
+	int dy = 0;//自动碎石（未使用参数）
 	int gtime = 80;//秒为单位
 	std::string name, line;
 	std::ifstream settings("Settings.txt");
@@ -82,12 +82,14 @@ int main(void) {
 	startY = rect.top + (rect.bottom - rect.top) * startKy;
 	outX = rect.left + (rect.right - rect.left) * outKx;
 	outY = rect.top + (rect.bottom - rect.top) * outKy;
+	int k = 0;
 	while (1) {
 		srand(time(0));
 		SetCursorPos(readyX + rand() % 20, readyY + rand() % 20);
 		mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, GetMessageExtraInfo());
 		mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, GetMessageExtraInfo());
-		Sleep(2000 + rand() % 1000);
+		std::cout << "准备行动" << std::endl;
+		Sleep(4000 + rand() % 1000);
 		GetColor(outX * multiple, outY * multiple, color);
 		if (color[0] < 180 && color[0] > 160 && color[1] < 180 && color[1] > 160 && color[2] < 180 && color[2] > 160) {
 			if (dy > 0) {
@@ -111,15 +113,31 @@ int main(void) {
 		SetCursorPos(startX + rand() % 20, startY + rand() % 20);
 		mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, GetMessageExtraInfo());
 		mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, GetMessageExtraInfo());
+		std::cout << "开始行动" << std::endl;
+		std::cout << "行动时长：" << gtime << "s" << std::endl;
 		Sleep(gtime * 1000 + rand() % 2000);
+		k = 0;
 		GetColor((readyX - (rect.right - rect.left) * 0.0173611) * multiple, readyY * multiple, color);
 		while (color[0] > 30 || color[1] > 30 || color[2] > 30) {
+			std::cout << "延时2s" << std::endl;
 			Sleep(2000);
+			GetColor((readyX - (rect.right - rect.left) * 0.0173611) * multiple, readyY * multiple, color);
+			k = 1;
+		}
+		std::cout << "行动结束" << std::endl;
+		if (k == 1) {
+			std::cout << "延时10s" << std::endl;
+			Sleep(10000);
+		}
+		else {
+			std::cout << "延时5s" << std::endl;
+			Sleep(5000);
 		}
 		SetCursorPos(rect.left + (rect.right - rect.left) * 0.5 + rand() % 20, rect.top + (rect.bottom - rect.top) * 0.5 + rand() % 20);
 		mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, GetMessageExtraInfo());
 		mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, GetMessageExtraInfo());
-		Sleep(5000 + rand() % 1000);
+		std::cout << "返回界面" << std::endl;
+		Sleep(6000 + rand() % 1000);
 	}
 
 	//SetCursorPos(startX, startY);
